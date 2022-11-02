@@ -1,0 +1,14 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<form method="POST" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form.as_p}}
+    <p>Bid:</p>
+    <input type="number" name="number"> 
+    
+    <input type="submit" value="Submit"/>
+</form>
+
+{% endblock %}

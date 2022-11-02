@@ -1,0 +1,92 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="listing-container">
+
+    <div style='margin: 0 auto;'>
+        <h2>{{listing.title}}</h2>
+        <img src="{{ listing.picture.url }}" style='max-width: 300px;'>
+    </div>
+
+
+    <div>
+        <small>Posted {{listing.created|timesince}} ago, by @{{listing.user}}</small>
+
+        {% if listing.status == 'active' %}
+
+            {% if listing.user == request.user %}
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="submit" value="Close Listing" name="close-button"/>
+            </form>
+            {% endif %}
+
+            <h3>{{listing.title}}</h3>
+
+
+            {% if request.user == listing.bid.user %}        
+                <small>Your bid is currently the highest.</small>
+            {% endif %}
+            <h5>Current bid: {{listing.bid}}$</h5>
+            {% if request.user.is_authenticated %}
+                <h6>Your bid:</h6>
+
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <input type="number" name="number" placeholder="{{listing.bid}}" min_value={{listing.bid}}/>
+                </form>
+            {% else %}
+                <h6><a href={% url 'login' %}>Login to bid.</a></h6>
+            {% endif %}
+                    <br>
+            <p>{{listing.description}}</p>
+            {% if request.user.is_authenticated %}
+                {% if listing not in watchlist %}
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <input type="submit" value="Add to Watchlist"/>
+                    </form>
+                {% else  %}
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <input type="submit" value="Remove from Watchlist" name="remove-button"/>
+                    </form>
+                {% endif %}
+            {% endif %}
+        {%  else %}
+            <h3>Closed Listing</h3>
+            <h4>@{{listing.bid.user}} won the bid!</h4>
+            <h5><a href="{% url 'index' %}?q={{listing.category.name}}">Check other listings in that category</a></h5>
+        {% endif %}
+
+
+    </div>
+
+</div>
+<hr>
+<h3>Comments</h3>
+<hr>
+{% for comment in comments %}
+    <small>@{{comment.user}} | {{comment.created|timesince}} ago</small>
+    <p>{{comment.content}}</p>
+    <hr>
+{% endfor %}
+
+{% if request.user.is_authenticated %}
+    <form method="POST" action="">
+        {% csrf_token %}
+        <input type="text" name="content" placeholder="Write your comment here..."/>
+    </form>
+{% else %}
+    <a href={% url 'login' %}>Login to comment.</a>
+
+{% endif %}
+{% endblock %}

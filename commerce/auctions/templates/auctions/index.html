@@ -1,0 +1,40 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="home-container">
+    <div>
+        Categories:
+        <hr>
+        <a href={% url 'index' %}>All</a>
+        <hr>
+        {% for topic in topics %}
+            <p><a href="{% url 'index' %}?q={{topic.name}}">{{topic.name}}</a></p>
+            <hr>
+        {% endfor %}
+    </div>
+
+
+    <div>
+
+    <h2>Active Listings</h2>
+    {% if query != '' %}
+        <small>in {{query}} category</small>
+    {% endif %}
+
+    <hr>
+        {% for listing in listings %}
+            <a href="{% url 'detail' listing.id %}" style="padding-left: 30px;">
+            <img src="{{ listing.picture.url }}" style='max-width: 150px; max-height: 150px; float: left; padding-left: 30;'>
+            <div style="padding-left: 160px;">
+            <h3>{{ listing.title }}</h3>
+            <small>Current Price: {{ listing.bid }}$</small>
+            <p>{{ listing.description }}</p>
+            </a>
+            <hr>
+            </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+{% endblock %}

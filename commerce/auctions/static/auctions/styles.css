@@ -1,0 +1,13 @@
+body {
+    padding: 10px;
+}
+
+.home-container{
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+
+.listing-container{
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+}
